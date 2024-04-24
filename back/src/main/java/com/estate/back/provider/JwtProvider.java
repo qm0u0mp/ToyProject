@@ -24,10 +24,11 @@ public class JwtProvider {
 
     @Value("${jwt.secret-key}")
     private String secretKey;
-    private Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharset.UTF_8));
 
     // JWT 생성 메서드
     public String create(String userId) {
+
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharset.UTF_8));
 
         // 만료일 = 현재시간 + 10시간
         Date expiredDate = Date.from(Instant.now().plus(10, ChronoUnit.HOURS));
@@ -44,7 +45,10 @@ public class JwtProvider {
 
     // JWT 검증 메서드
     public String validate(String jwt) {
+
         String userId = null;
+
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharset.UTF_8));
 
         try {
             // userId 반환 작업
