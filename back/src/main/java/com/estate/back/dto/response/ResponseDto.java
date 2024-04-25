@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ResponseDto {
     private String code;
-    private String messge;
+    private String message;
 
     // 성공
     public static ResponseEntity<ResponseDto> success() {
