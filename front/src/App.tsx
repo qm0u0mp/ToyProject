@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
-import { Route, Routes } from 'react-router';
-import { AUTH_PATH, LOCAL_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH, QNA_WRITE_PATH, RATIO_PATH, SERVICE_PATH } from './constant';
+import { Route, Routes, useNavigate } from 'react-router';
+import { AUTH_ABSOLUTE_PATH, AUTH_PATH, LOCAL_ABSOLUTE_PATH, LOCAL_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH, QNA_WRITE_PATH, RATIO_PATH, SERVICE_PATH } from './constant';
+import Authentication from './views/Authentication';
+import ServiceContainer from './views/NotFound';
+import Local from './service/Local';
+import Ratio from './service/Ratio';
+import QnaList from './service/qna/QnaList';
+import QnaWrite from './service/qna/QnaWrite';
+import QnaDetail from './service/qna/QnaDetail';
+import QnaUpdate from './service/qna/QnaUpdate';
+import NotFound from './layouts/ServiceContainer';
+import { useCookies } from 'react-cookie';
 
 // authentication (로그인, 회원가입)
 // service
@@ -12,21 +22,50 @@ import { AUTH_PATH, LOCAL_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH, QNA_
 // - write (QnA 작성)
 // - update/:receptionNumber (QnA 수정)
 
+// root 경로 컴포넌트
+function Index() {
+  
+  // state
+  const [cookies] = useCookies();
+
+  // function
+  const navigator = useNavigate();
+
+  // effect
+  useEffect(() => {
+    const accessToken = cookies.accessToken;
+
+    if(accessToken) { // 로그인이 되어있는 상태
+      navigator(LOCAL_ABSOLUTE_PATH);
+    } else { // 로그인이 안되어있는 상태
+      navigator(AUTH_ABSOLUTE_PATH);
+    }
+
+  }, []);
+  
+  // render
+  return<></>;
+}
+
+// Application 컴포넌트
 function App() {
+
+  // render
   return (
     <Routes>
-      <Route path={AUTH_PATH} element={<></>} />
-      <Route path={SERVICE_PATH} element={<></>}>
-        <Route path={LOCAL_PATH} element={<></>}/>
-        <Route path={RATIO_PATH} element={<></>}/>
-        <Route path={QNA_PATH} element={<></>}>
-          <Route index element={<></>}/>
-          <Route path={QNA_WRITE_PATH} element={<></>}/> 
-          <Route path={QNA_DETAIL_PATH} element={<></>}/>       
-          <Route path={QNA_UPDATE_PATH} element={<></>}/>
+      <Route index element={<Index/>} />
+      <Route path={AUTH_PATH} element={<Authentication/>} /> 
+      <Route path={SERVICE_PATH} element={<ServiceContainer/>}>
+        <Route path={LOCAL_PATH} element={<Local/>}/>
+        <Route path={RATIO_PATH} element={<Ratio/>}/>
+        <Route path={QNA_PATH}>
+          <Route index element={<QnaList/>}/>
+          <Route path={QNA_WRITE_PATH} element={<QnaWrite/>}/> 
+          <Route path={QNA_DETAIL_PATH} element={<QnaDetail/>}/>       
+          <Route path={QNA_UPDATE_PATH} element={<QnaUpdate/>}/>
         </Route>        
       </Route>
-      <Route path='*' element={<></>} />
+      <Route path='*' element={<NotFound/>} />
     </Routes>
   );
 }

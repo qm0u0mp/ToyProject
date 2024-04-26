@@ -13,7 +13,7 @@ export const requestHandler = <T>(response : AxiosResponse<T, any>) => {
 // Request Error 처리 함수
 // 실패 결과를 받을 수 있음
 export const requestErrorHandler = (error : any) => { 
-        const responseBody = error.response.data;
+        const responseBody = error.response?.data;
 
         if(!responseBody){
             return null;
