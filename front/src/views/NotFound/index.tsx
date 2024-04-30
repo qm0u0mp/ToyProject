@@ -1,11 +1,6 @@
-import React from 'react'
+import React from 'react';
 import './style.css'
 
-export default function ServiceContainer
-() {
-    return (
-        <div>ServiceContainer
-
-        </div>
-    )
+export default function NotFound() {
+    return <div>NotFound</div>;
 }

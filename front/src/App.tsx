@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import { Route, Routes, useNavigate } from 'react-router';
-import { AUTH_ABSOLUTE_PATH, AUTH_PATH, LOCAL_ABSOLUTE_PATH, LOCAL_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH, QNA_WRITE_PATH, RATIO_PATH, SERVICE_PATH } from './constant';
-import Authentication from './views/Authentication';
-import ServiceContainer from './views/NotFound';
+import { AUTH_ABSOLUTE_PATH, AUTH_PATH, LOCAL_ABSOLUTE_PATH, LOCAL_PATH, QNA_DETAIL_PATH, QNA_PATH, QNA_UPDATE_PATH, QNA_WRITE_PATH, RATIO_PATH, SERVICE_PATH, SNS_PATH } from './constant';
+import Authentication, { Sns } from './views/Authentication';
 import Local from './service/Local';
 import Ratio from './service/Ratio';
 import QnaList from './service/qna/QnaList';
@@ -12,6 +11,7 @@ import QnaDetail from './service/qna/QnaDetail';
 import QnaUpdate from './service/qna/QnaUpdate';
 import NotFound from './layouts/ServiceContainer';
 import { useCookies } from 'react-cookie';
+import ServiceContainer from './layouts/ServiceContainer';
 
 // authentication (로그인, 회원가입)
 // service
@@ -54,6 +54,7 @@ function App() {
   return (
     <Routes>
       <Route index element={<Index/>} />
+      <Route path={SNS_PATH} element={<Sns />} />
       <Route path={AUTH_PATH} element={<Authentication/>} /> 
       <Route path={SERVICE_PATH} element={<ServiceContainer/>}>
         <Route path={LOCAL_PATH} element={<Local/>}/>

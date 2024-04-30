@@ -42,7 +42,7 @@ export const EmailAuthCheckRequest = async (requestBody: EmailAuthCheckRequestDt
 }
 
 // 회원가입 API 함수
-export const SignUpCheckRequest = async (requestBody: SignUpRequestDto) => {
+export const SignUpRequest = async (requestBody: SignUpRequestDto) => {
     const result = await axios.post(SIGN_UP_REQUEST_URL, requestBody)
     .then(requestHandler<ResponseDto>)
     .catch(requestErrorHandler)
