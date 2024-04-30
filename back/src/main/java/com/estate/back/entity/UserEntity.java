@@ -10,16 +10,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// Estate 데이터베이스의 User 테이블과 매핑되는 Entity 클래스
-
-@Entity(name = "User")
+// estate 데이터베이스의 user 테이블과 매핑되는 Entity 클래스
+@Entity(name = "user")
 @Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity {
-
     @Id
     private String userId;
     private String userPassword;
@@ -34,5 +32,4 @@ public class UserEntity {
         this.userRole = "ROLE_USER";
         this.joinPath = "HOME";
     }
-
 }

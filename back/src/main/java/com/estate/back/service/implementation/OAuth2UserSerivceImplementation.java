@@ -15,7 +15,6 @@ import com.estate.back.entity.EmailAuthNumberEntity;
 import com.estate.back.entity.UserEntity;
 import com.estate.back.repository.EmailAuthNumberRepository;
 import com.estate.back.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 

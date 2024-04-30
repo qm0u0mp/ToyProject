@@ -3,8 +3,12 @@ import "./style.css";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { AUTH_ABSOLUTE_PATH, LOCAL_ABSOLUTE_PATH, QNA_LIST_ABSOLUTE_PATH, RATIO_ABSOLUTE_PATH } from "src/constant";
 import { useCookies } from "react-cookie";
+import { getSignInUserRequest } from "src/apis/user";
+import { GetSignInUserResponseDto } from "src/apis/user/dto/response/idex";
+import ResponseDto from "src/apis/response.dto";
+import useUserStore from "src/stores/user.store";
 
-type Path = '지역 평균' | '비율 계산' | 'Q&A 게시판';
+type Path = '지역 평균' | '비율 계산' | 'Q&A 게시판' | '';
 
 interface Props {
     path: Path;
@@ -12,6 +16,7 @@ interface Props {
 
 function TopBar({ path } : Props) {
     
+    const {loginUserRole} = useUserStore();
     const [cookies, setCookie, removeCookie] = useCookies();
     const navigator = useNavigate();
 
@@ -27,7 +32,7 @@ function TopBar({ path } : Props) {
             <div className="top-bar-container">
                 <div className="top-bar-title">{ path }</div>
                 <div className="top-bar-right">
-                    <div className="top-bar-role">관리자</div>
+                    {loginUserRole === 'ROLE_ADMIN' && <div className="top-bar-role">관리자</div>}
                     <div className="second-button" onClick={onLogoutClickHandler}>로그아웃</div>
                 </div>
             </div>
@@ -72,12 +77,32 @@ function SideNavigation({ path }: Props) {
             </div>
             </div>
     );
-
 }
+
 export default function ServiceContainer() {
 
     const { pathname } = useLocation();
-    const [path, setPath] = useState<Path>('지역 평균');
+    const { setLoginUserId, setLoginUserRole } = useUserStore();
+    const [cookies] = useCookies();
+    const [path, setPath] = useState<Path>('');
+
+    const getSignInUserResponse = (result: GetSignInUserResponseDto | ResponseDto | null) => {
+
+        const message = 
+        !result ? '서버에 문제가 있습니다.' :
+        result.code === 'AF' ? '인증에 실패했습니다.' :
+        result.code === 'DBE' ? '서버에 문제가 있습니다.' : ''
+
+        if (!result || result.code != 'SU'){
+            alert(message);
+            return;
+        }
+
+        const {userId, userRole} = result as GetSignInUserResponseDto;
+        setLoginUserId(userId);
+        setLoginUserRole(userRole);
+    }
+
 
     useEffect(()=>{
         const path=
@@ -88,6 +113,16 @@ export default function ServiceContainer() {
         setPath(path);
 
     },[pathname])
+
+    useEffect(()=>{
+
+        if(!cookies.accessToken) {
+            return;
+        }
+
+        getSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
+
+    },[cookies.accessToken])
 
     return (
         <div id="wrapper">

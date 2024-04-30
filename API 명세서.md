@@ -523,9 +523,9 @@ Content-Type: application/json;charset=UTF-8
 
 ##### 설명
 
-클라이언트로부터 Request Header의 Authorization 필드로 Bearer 토큰을 포함하여 요청을 받으면 해당 토큰의 작성자(subject)에 해당하는 사용자 정보를 반환, 
+클라이언트로부터 Request Header의 Authorization 필드로 Bearer 토큰을 포함하여 요청을 받으면 해당 토큰의 작성자(subject)에 해당하는 사용자 정보를 반환합니다. 성공시에는 사용자의 아이디와 권한을 반환합니다. 인증 실패 및 데이터베이스 에러가 발생할 수 있습니다.
 
-#### client가 header에 bearer 토큰을 포함하여 요청
+##### client가 header에 bearer 토큰을 포함하여 요청
 0. 해당 요청의 메서드와 URL을 보고 인증 인가가 필요한 요청인지 확인
 1. header의 Authorization 필드에 값이 있는지 확인
 2. 해당 요청의 인증 방식이 Bearer 인증 방식인지 확인
@@ -536,17 +536,16 @@ Content-Type: application/json;charset=UTF-8
 7. 조회 결과롸부터 사용자의 권한을 추출
 8. context에 request의 정보와 접근주체의 정보를 추가
 9. 접근 주체가 해당 요청을 사용할 권한이 있는지 확인
-10. 컨트롤러의 메서드에서 접근 주체의 정보를 가져옴
+10. 컨트롤러의 메서드에서 접근 주체의 정보를 가져옴  
+0.1 만약 인증 및 인가 작업에 실패하면 'AF' 응답 처리
+11. 데이터베이스의 user 테이블에서 userId에 해당하는 레코드를 조회  
+11.1. 데이터베이스 오류 발생 시 'DBE' 응답 처리
+12. 존재하는 user인지 확인  
+12.1. 존재하지 않으면 'AF' 응답 처리
+13. 'SU' 응답 처리 (userId, userRole 포함)
 
-(userId)
-
-11. 데이터베이스의 user 테이블에서 userId에 해당하는 레코드를 조회
-11-1. 데이터베이스 오류 발생 시 'DBE' 응답 처리
-12. 존재하는 user인지 확인
-12-1. 존재하지 않으면 'NU' 응답 처리
-
-- method : **POST**  
-- URL : **/sign-in**  
+- method : **GET**  
+- URL : **/**  
 
 ##### Request
 
@@ -554,20 +553,13 @@ Content-Type: application/json;charset=UTF-8
 
 | name | description | required |
 |---|:---:|:---:|
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| userId | String | 사용자의 아이디 | O |
-| userPassword | String | 사용자의 비밀번호 | O |
+| Authorization | 인증에 사용될 Bearer 토큰 | o |
 
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/api/v1/auth/sign-in" \
- -d "userId=service123" \
- -d "userPassword=P!ssw0rd"
+curl -v -X GET "http://localhost:4000/api/v1/user/" \
+ -H "Authorization: Bearer {JWT}" 
 ```
 
 ##### Response
@@ -584,8 +576,8 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/sign-in" \
 |---|:---:|:---:|:---:|
 | code | String | 사용자의 아이디 | O |
 | message | String | 사용자의 비밀번호 | O |
-| accessToken | String | 사용자의 아이디 | O |
-| expires | int | 사용자의 비밀번호 | O |
+| userId | String | 사용자의 아이디 | O |
+| userRole | String | 사용자의 권한 | O |
 
 ###### Example
 
@@ -596,28 +588,28 @@ Content-Type: application/json;charset=UTF-8
 {
   "code": "SU",
   "message": "Success.",
-  "accessToken": "${ACCESS_TOKEN}",
-  "expires": 3600
+  "userId": "${userId}",
+  "userRole": "${userRole}",
 }
 ```
 
-**응답 : 실패 (데이터 유효성 검사 실패)**
+**응답 : 실패 (인가실패)**
 ```bash
-HTTP/1.1 400 Bad Request
+HTTP/1.1 403 Forbidden
 Content-Type: application/json;charset=UTF-8
 {
-  "code": "VF",
-  "message": "Varidation Failed."
+  "code": "AF",
+  "message": "Authorization Failed."
 }
 ```
 
-**응답 : 실패 (로그인 정보 불일치)**
+**응답 : 실패 (인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
 {
-  "code": "SF",
-  "message": "Sign in Failed."
+  "code": "AF",
+  "message": "Authentication Failed."
 }
 ```
 
