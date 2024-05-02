@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.estate.back.dto.request.board.PostBoardRequestDto;
 import com.estate.back.dto.response.ResponseDto;
+import com.estate.back.dto.response.board.GetBoardListResponseDto;
 import com.estate.back.service.BoardService;
 
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -30,4 +32,10 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<? super GetBoardListResponseDto> getBoardList() {
+        ResponseEntity<? super GetBoardListResponseDto> response = boardService.getBoardList();
+
+        return response;
+    }
 }

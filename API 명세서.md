@@ -799,7 +799,7 @@ curl -v -X GET "http://localhost:4000/api/v1/board/list" \
 |---|:---:|:---:|:---:|
 | code | String | 결과 코드 | O |
 | message | String | 결과 메세지 | O |
-| boardList | BoardListItem | Q&A 게시물 리스트 | O |
+| boardList | BoardListItem[] | Q&A 게시물 리스트 | O |
 
 
 | name | type | description | required |
