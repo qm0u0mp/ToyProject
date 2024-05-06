@@ -1,6 +1,5 @@
-// Q&A 작성 Request Body DTO
-
+// Q&A 작성 Request Body DTO //
 export interface PostBoardRequestDto {
-    title : string;
-    contents : string;
+    title: string;
+    contents: string;
 }

@@ -14,31 +14,30 @@ interface Props {
     path: Path;
 }
 
-function TopBar({ path } : Props) {
-    
-    const {loginUserRole} = useUserStore();
+function TopBar({ path }: Props) {
+
+    const { loginUserRole } = useUserStore();
     const [cookies, setCookie, removeCookie] = useCookies();
     const navigator = useNavigate();
 
-    // 로그아웃 처리 시 원래 있던 쿠키 값을 제거해야함
+   // 로그아웃 처리 시 원래 있던 쿠키 값을 제거해야함
     const onLogoutClickHandler = () => {
         removeCookie('accessToken', { path: '/' });
         navigator(AUTH_ABSOLUTE_PATH);
-    }
-    
+    };
+
     return (
         <>
-            <div className="logo-container">임대주택 가격 서비스</div>
-            <div className="top-bar-container">
-                <div className="top-bar-title">{ path }</div>
-                <div className="top-bar-right">
-                    {loginUserRole === 'ROLE_ADMIN' && <div className="top-bar-role">관리자</div>}
-                    <div className="second-button" onClick={onLogoutClickHandler}>로그아웃</div>
-                </div>
+        <div className="logo-container">임대주택 가격 서비스</div>
+        <div className="top-bar-container">
+            <div className="top-bar-title">{ path }</div>
+            <div className="top-bar-right">
+                { loginUserRole === 'ROLE_ADMIN' && <div className="top-bar-role">관리자</div> }
+                <div className="second-button" onClick={onLogoutClickHandler}>로그아웃</div>
             </div>
-            </>
-        );
-    
+        </div>
+        </>
+    );
 }
 
 function SideNavigation({ path }: Props) {
@@ -49,17 +48,9 @@ function SideNavigation({ path }: Props) {
 
     const navigator = useNavigate();
 
-    const onLocalClickHandler = () => {
-        navigator(LOCAL_ABSOLUTE_PATH);
-    }
-
-    const onRatioClickHandler = () => {
-        navigator(RATIO_ABSOLUTE_PATH);
-    }
-
-    const onQnaClickHandler = () => {
-        navigator(QNA_LIST_ABSOLUTE_PATH);
-    }
+    const onLocalClickHandler = () => navigator(LOCAL_ABSOLUTE_PATH);
+    const onRatioClickHandler = () => navigator(RATIO_ABSOLUTE_PATH);
+    const onQnaClickHandler = () => navigator(QNA_LIST_ABSOLUTE_PATH);
 
     return (
         <div className="side-navigation-container">
@@ -75,7 +66,7 @@ function SideNavigation({ path }: Props) {
                 <div className="side-navigation-icon edit"></div>
                 <div className="side-navigation-title">Q&A 게시판</div>
             </div>
-            </div>
+        </div>
     );
 }
 
@@ -91,50 +82,49 @@ export default function ServiceContainer() {
     const getSignInUserResponse = (result: GetSignInUserResponseDto | ResponseDto | null) => {
 
         const message = 
-        !result ? '서버에 문제가 있습니다.' :
-        result.code === 'AF' ? '인증에 실패했습니다.' :
-        result.code === 'DBE' ? '서버에 문제가 있습니다.' : ''
+            !result ? '서버에 문제가 있습니다.' :
+            result.code === 'AF' ? '인증에 실패했습니다.' :
+            result.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
-        if (!result || result.code != 'SU'){
+        if (!result || result.code !== 'SU') {
             alert(message);
             navigator(AUTH_ABSOLUTE_PATH);
             return;
         }
 
-        const {userId, userRole} = result as GetSignInUserResponseDto;
+        const { userId, userRole } = result as GetSignInUserResponseDto;
         setLoginUserId(userId);
         setLoginUserRole(userRole);
-    }
 
+    };
 
-    useEffect(()=>{
-        const path=
-        pathname === LOCAL_ABSOLUTE_PATH ? '지역 평균' :
-        pathname === RATIO_ABSOLUTE_PATH ? '비율 계산' :
-        pathname.startsWith(QNA_LIST_ABSOLUTE_PATH) ? 'Q&A 게시판' : '지역 평균';
+    useEffect(() => {
+        const path = 
+            pathname === LOCAL_ABSOLUTE_PATH ? '지역 평균' :
+            pathname === RATIO_ABSOLUTE_PATH ? '비율 계산' :
+            pathname.startsWith(QNA_LIST_ABSOLUTE_PATH) ? 'Q&A 게시판' : '';
 
         setPath(path);
+    }, [pathname]);
 
-    },[pathname])
+    useEffect(() => {
 
-    useEffect(()=>{
-
-        if(!cookies.accessToken) {
+        if (!cookies.accessToken) {
             navigator(AUTH_ABSOLUTE_PATH);
             return;
         }
 
         getSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
 
-    },[cookies.accessToken])
+    }, [cookies.accessToken]);
 
     return (
         <div id="wrapper">
             <TopBar path={path} />
             <SideNavigation path={path} />
             <div className="main-container">
-            <Outlet />
+                <Outlet />
+            </div>
         </div>
-    </div>
     );
 }
