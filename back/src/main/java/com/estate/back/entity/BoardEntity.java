@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 // estate 데이터베이스의 board 테이블과 매핑되는 Entity 클래스
-
 @Entity(name = "board")
 @Table(name = "board")
 @Getter
@@ -25,7 +24,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer receptionNumber;
@@ -40,13 +38,17 @@ public class BoardEntity {
     public BoardEntity(PostBoardRequestDto dto, String userId) {
         Date now = Date.from(Instant.now());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String writeDateTime = simpleDateFormat.format(now);
+        String writeDatetime = simpleDateFormat.format(now);
 
         this.status = false;
         this.title = dto.getTitle();
         this.contents = dto.getContents();
         this.writerId = userId;
-        this.writeDatetime = writeDateTime;
+        this.writeDatetime = writeDatetime;
         this.viewCount = 0;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }

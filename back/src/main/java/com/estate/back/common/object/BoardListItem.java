@@ -1,10 +1,9 @@
 package com.estate.back.common.object;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.estate.back.common.util.ChangeDateFormatUtil;
 import com.estate.back.entity.BoardEntity;
 
 import lombok.Getter;
@@ -19,10 +18,7 @@ public class BoardListItem {
     private Integer viewCount;
 
     private BoardListItem(BoardEntity boardEntity) throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date datetime = simpleDateFormat.parse(boardEntity.getWriteDatetime());
-        simpleDateFormat = new SimpleDateFormat("yy.MM.dd");
-        String writeDatetime = simpleDateFormat.format(datetime);
+        String writeDatetime = ChangeDateFormatUtil.changeYYMMDD(boardEntity.getWriteDatetime());
 
         String writerId = boardEntity.getWriterId();
         writerId = writerId.substring(0, 1) +
