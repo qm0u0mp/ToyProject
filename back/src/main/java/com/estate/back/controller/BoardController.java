@@ -2,6 +2,7 @@ package com.estate.back.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.estate.back.dto.request.board.PostBoardRequestDto;
 import com.estate.back.dto.request.board.PostCommentRequestDto;
+import com.estate.back.dto.request.board.PutBoardRequestDto;
 import com.estate.back.dto.response.ResponseDto;
 import com.estate.back.dto.response.board.GetBoardListResponseDto;
 import com.estate.back.dto.response.board.GetBoardResponseDto;
@@ -20,6 +22,7 @@ import com.estate.back.service.BoardService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/v1/board")
@@ -71,6 +74,15 @@ public class BoardController {
         return response;
     }
 
+    @PutMapping("/{receptionNumber}")
+    public ResponseEntity<ResponseDto> putBoard(
+            @RequestBody @Valid PutBoardRequestDto requestBody,
+            @PathVariable("receptionNumber") int receptionNumber,
+            @AuthenticationPrincipal String userId) {
+        ResponseEntity<ResponseDto> response = boardService.putBoard(requestBody, receptionNumber, userId);
+        return response;
+    }
+
     // 토큰 값 넣어서 SU 확인 -> viewCount 1 증가시킴
     // 토큰 값 뺀 상태에서 AF, NB 확인
     @PatchMapping("/{receptionNumber}/increase-view-count")
@@ -80,4 +92,15 @@ public class BoardController {
         return response;
     }
 
+    // 토큰 값 넣어서 SU 확인 -> 사용자 계정
+    // 토큰 갑 넣어서 존재하지 않는 게시물 번호 입력 시 -> NB
+    // 토큰 값 뺀 상태에서 AF(Authorization Failed)
+    // 토큰 값 넣어서 (관리자 계정) AF(Authorization Failed) -> 관리자는 삭제 권한 없음
+    @DeleteMapping("/{receptionNumber}")
+    public ResponseEntity<ResponseDto> deleteBoard(
+            @PathVariable("receptionNumber") int receptionNumber,
+            @AuthenticationPrincipal String userId) {
+        ResponseEntity<ResponseDto> response = boardService.deleteBoard(receptionNumber, userId);
+        return response;
+    }
 }

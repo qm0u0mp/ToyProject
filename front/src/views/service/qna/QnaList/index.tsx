@@ -77,6 +77,13 @@ export default function QnaList() {
     };
 
     const changeBoardList = (boardList: BoardListItem[]) => {
+        
+        // filter : 배열에서 filter 함수를 호출하면 콜백함수 전달 받음
+        // boarList 안의 배열을 반환함
+        // true, false 값들만 반환함
+        if(isToggleOn){
+            boardList = boardList.filter(board => !board.status);
+        }
         setBoardList(boardList);
 
         const totalLenght = boardList.length;
@@ -107,6 +114,9 @@ export default function QnaList() {
 
         const { boardList } = result as GetBoardListResponseDto;
         changeBoardList(boardList);
+
+        setCurrentPage(1);
+        setCurrentSection(1);
     };
 
     const getSearchBoardListResponse = (result: GetSearchBoardListResponseDto | ResponseDto | null) => {
@@ -170,8 +180,8 @@ export default function QnaList() {
 
     useEffect(() => {
         if (!cookies.accessToken) return;
-        getBoardListRequest(cookies.accessToken).then(getBoardListResponse);
-    }, []);
+        getBoardListRequest(cookies.accessToken).then(getBoardListResponse);        
+    }, [isToggleOn]);
 
     useEffect(() => {
         if (!boardList.length) return;
