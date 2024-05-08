@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react'
 import './style.css';
 import SignInBackground from 'src/assets/image/sign-in-background.png';
 import SignUpBackground from 'src/assets/image/sign-up-background.png';
@@ -98,6 +98,13 @@ function SignIn({onLinkClickHandler} : Props) {
     setMessage('');
   }
 
+  const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if(event.key !== 'Enter') {
+      return;
+    }
+    onSignInButtonClickHandler();
+  }
+
   const onSignInButtonClickHandler = () => {
         
     if (!id || !password) {
@@ -129,6 +136,7 @@ function SignIn({onLinkClickHandler} : Props) {
           value={password}
           placeholder='비밀번호를 입력해주세요.'
           onChangeHandler={onPasswordChangeHandler}
+          onKeyDownHandler={onPasswordKeyDownHandler}
           message={message} error
         />
       </div>

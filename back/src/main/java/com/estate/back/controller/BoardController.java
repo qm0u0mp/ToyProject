@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.estate.back.dto.request.board.PostBoardRequestDto;
@@ -58,9 +59,9 @@ public class BoardController {
         return response;
     }
 
-    @GetMapping("/list/{searchWord}")
+    @GetMapping("/list/search")
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
-            @PathVariable("searchWord") String searchWord) {
+            @RequestParam("word") String searchWord) {
         ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(searchWord);
         return response;
     }
@@ -74,6 +75,11 @@ public class BoardController {
         return response;
     }
 
+    // 토큰 값 없이 -> AF
+    // 토큰 값 있는 상태에서 리퀘스트 바디 값 없이 -> VF
+    // 토큰 값 있는 상태에서 존재하지 않는 접수번호 -> NB
+    // 토큰 값 있는 상태(관리자) 작성자가 아닐 때 -> AF
+    // 토큰 값 있는 상태(사용자) 답글이 달린 상태 -> WC
     @PutMapping("/{receptionNumber}")
     public ResponseEntity<ResponseDto> putBoard(
             @RequestBody @Valid PutBoardRequestDto requestBody,

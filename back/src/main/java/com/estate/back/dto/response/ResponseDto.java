@@ -69,6 +69,13 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
     }
 
+    // 404 Not Found 처리
+    public static ResponseEntity<ResponseDto> notFound() {
+        ResponseDto responseBody = new ResponseDto(ResponseCode.NOT_FOUND,
+                ResponseMessage.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+    }
+
     // 토큰 생성 실패
     public static ResponseEntity<ResponseDto> tokenCreationFailed() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.TOKEN_CREATION_FAILED,
@@ -87,5 +94,4 @@ public class ResponseDto {
         ResponseDto responseBody = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
-
 }
