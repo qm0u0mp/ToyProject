@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "react-cookie": "^7.1.4",
+    "react-router": "^6.23.0",
+    "react-router-dom": "^6.23.0",
+    "zustand": "^4.5.2"
+  }
+}
