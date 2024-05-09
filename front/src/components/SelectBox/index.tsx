@@ -34,6 +34,7 @@ export default function SelectBox({ value, onChange }: Prop) {
     };
 
     const buttonClass = show ? 'select-close-button' : 'select-open-button';
+    
     return (
         <div className='select-box'>
             { value === '' ? 
