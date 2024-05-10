@@ -816,7 +816,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트로부터 Request Header의 Authorization 필드로 Bearer 토큰을 포함하여 검색어를 입력받고 요청을 보내면 작성일 기준 내림차순으로 제목에 해당 검색어가 포함된 게시물 리스트를 반환합니다. 만약 불러오기에 실패하면 실패처리를 합니다. 인가 실패, 데이터베이스 에러가 발생할 수 있습니다.
 
 - method : **GET**  
-- URL : **/list/{searchWord}**  
+- URL : **/list/search**  
 
 ##### Request
 
@@ -826,16 +826,16 @@ Content-Type: application/json;charset=UTF-8
 |---|:---:|:---:|
 | Authorization | 인증에 사용될 Bearer 토큰 | O |
 
-###### Path Variable
+###### Query Param
 
 | name | type | description | required |
 |---|:---:|:---:|:---:|
-| searchWord | String | 검색어 | O |
+| word | String | 검색어 | O |
 
 ###### Example
 
 ```bash
-curl -v -X GET "http://localhost:4000/api/v1/board/list/${searchWord}" \
+curl -v -X GET "http://localhost:4000/api/v1/board/list/search?word=${searchWord}" \
  -H "Authorization: Bearer {JWT}"
 ```
 
