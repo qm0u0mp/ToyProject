@@ -1,4 +1,5 @@
 // Navigation URL PATH
+// Route에서 사용
 export const SNS_PATH = '/sns/:accessToken/:expires';
 export const AUTH_PATH = '/authentication';
 export const SERVICE_PATH = '/service'; // service 뒤에 붙은 경로는 '/'가 붙지않음

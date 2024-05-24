@@ -1483,7 +1483,7 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 지역 평균 데이터 불러오기  
+#### - 지역 평균 데이터 불러오기
   
 ##### 설명
 
